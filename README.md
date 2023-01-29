@@ -1,7 +1,24 @@
 # ngx-reactive-forms-generator
 Creates Angular FormGroup instances from DTOs (e.g. class PersonRequest) using decorators
 
-# Preambule
+<a href="https://www.npmjs.com/package/@codexio/ngx-reactive-forms-generator" target="_blank"><img src="https://img.shields.io/npm/v/@codexio/ngx-reactive-forms-generator.svg" alt="NPM Version" /></a>
+<a href="https://www.npmjs.com/package/@codexio/ngx-reactive-forms-generator" target="_blank"><img src="https://img.shields.io/npm/l/@codexio/ngx-reactive-forms-generator.svg" alt="Package License" /></a>
+<a href="https://www.npmjs.com/package/@codexio/ngx-reactive-forms-generator" target="_blank"><img src="https://img.shields.io/npm/dm/@codexio/ngx-reactive-forms-generator.svg" alt="NPM Downloads" /></a>
+
+# Table of Contents
+- [Preambule](#preambule)
+- [API Docs with Examples](#api-docs-with-examples)
+  * [Decorator `@FormGroupTarget`](#decorator-formgrouptarget)
+  * [Decorator `@FormGroupValidators`](#decorator-formgroupvalidators)
+  * [Decorator `@FormGroupAsyncValidators`](#decorator-formgroupasyncvalidators)
+  * [Decorator `@FormControlTarget`](#decorator-formcontroltarget)
+  * [Decorator `@FormControlAsyncValidators`](#decorator-formcontrolasyncvalidators)
+  * [Function `toFormGroup<Type>(Type, [FormIdType])`](#function-toformgrouptypetype-formidtype)
+  * [Function `toFormGroups<Type>(Type, FormIdType[])`](#function-toformgroupstypetype-formidtype)
+- [Installation](#installation)
+  * [Installation / Usage Example](#installation--usage-example)
+
+# Preambule[^](#table-of-contents "Table of Contents")
 Have you felt the burden of describing your models in classes/interfaces and then redescribing them as `FormGroup` objects with multiple `FormControl` nested children? All the boilerplate that you need to write in order to achieve a decent **Reactive Forms** foundation in your project? It's not the case anymore!
 
 With several TypeScript decorators called `@FormGroupTarget`, `@FormGroupValidators`, `@FormGroupAsyncValidators`, `@FormControlTarget` and `@FormControlAsyncValidators` you can have a Reactive Form right out of your DTO.
@@ -34,9 +51,9 @@ class LoginForm {
 const loginFormGroup = toFormGroup<LoginForm>(LoginForm)!;
 ```
 
-# API Docs with examples
+# API Docs with Examples[^](#table-of-contents "Table of Contents")
 
-## Decorator `@FormGroupTarget`
+## Decorator `@FormGroupTarget`[^](#table-of-contents "Table of Contents")
 
 Decorator used on a class to denote that
 this class will be a target type if a form group value.
@@ -60,7 +77,7 @@ Usage:
 
 ```
 
-## Decorator `@FormGroupValidators`
+## Decorator `@FormGroupValidators`[^](#table-of-contents "Table of Contents")
 
 Decorator used on a class to denote that
 this class, which is already a target of
@@ -106,7 +123,7 @@ Example:
     
 ```
 
-## Decorator `@FormGroupAsyncValidators`
+## Decorator `@FormGroupAsyncValidators`[^](#table-of-contents "Table of Contents")
 
 Decorator used on a class to denote that
 this class, which is already a target of
@@ -155,7 +172,7 @@ Example:
 
 ```
 
-## Decorator `@FormControlTarget`
+## Decorator `@FormControlTarget`[^](#table-of-contents "Table of Contents")
 
 Decorator used on a **field/property** or a
 constructor **parameter** to denote that
@@ -215,7 +232,7 @@ Example:
     }
 ```
 
-## Decorator `@FormControlAsyncValidators`
+## Decorator `@FormControlAsyncValidators`[^](#table-of-contents "Table of Contents")
 
 Decorator used on a **field/property** or a
 constructor **parameter** to denote that
@@ -278,7 +295,7 @@ Example:
     }
 ```
 
-## Function `toFormGroup<Type>(Type, [FormIdType])`
+## Function `toFormGroup<Type>(Type, [FormIdType])`[^](#table-of-contents "Table of Contents")
 
 This function returns a FormGroup (in particular an
 enhanced **ModelFormGroup** which **value<**
@@ -308,7 +325,7 @@ Example
     }
 ```
 
-## Function `toFormGroups<Type>(Type, FormIdType[])`
+## Function `toFormGroups<Type>(Type, FormIdType[])`[^](#table-of-contents "Table of Contents")
 
 Same as `toFromGroup`, but gives an array of form groups associated to this `Type` depending on the array of *formId* supplied.
 If empty array is supplied, it will return all form groups associated to the given `Type`
@@ -327,6 +344,67 @@ Example:
             const invoice: InvoiceRequest = invoiceFormGroup.value!;
         });
     }
+```
+
+# Installation[^](#table-of-contents "Table of Contents")
+
+Installation is very simple. You just need to install the `npm` package `@codexio/ngx-reactive-forms-generator` into your Angular project. Then all the above decorators and functions will be available to be imported across your project
+
+## Installation / Usage Example[^](#table-of-contents "Table of Contents")
+
+**Terminal**
+```
+$ npm i @codexio/ngx-reactive-forms-generator
+```
+
+**app.component.ts**
+```
+import {FormControlTarget, ModelFormGroup, toFormGroup} from "@codexio/ngx-reactive-forms-generator";
+
+import {Component} from '@angular/core';
+import {Validators} from "@angular/forms";
+
+class LoginForm {
+  @FormControlTarget({updateOn: 'submit', validators: Validators.required})
+  email: string = '';
+
+  @FormControlTarget(Validators.minLength(6))
+  password: string = '';
+}
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html'
+})
+export class AppComponent implements OnInit {
+
+  loginForm: ModelFormGroup<LoginForm> = toFormGroup<LoginForm>(LoginForm)!;
+
+  login() {
+    console.log(this.loginForm);
+    console.log(this.loginForm.value); // LoginForm object
+  }
+  
+}
+```
+
+**app.component.html** *(Not related to this library, it uses standard Reactive Forms notations)*:
+
+```
+<h1>Login</h1>
+<form [formGroup]="loginForm" (ngSubmit)="login()">
+  <input type="text" formControlName="email" /><br/>
+  <div *ngIf="loginForm.get('email')?.errors?.['required'] && loginForm.get('email')?.dirty">
+    Username is required <!-- Will appear after submit -->
+  </div>
+
+  <input type="password" formControlName="password" /><br/>
+  <div *ngIf="loginForm.get('password')?.errors?.['minlength'] && loginForm.get('password')?.dirty">
+    Password too short <!-- Will appear when you change the value and it's with length < 6 -->
+  </div>
+
+  <button type="submit">Login</button>
+</form>
 ```
 
 Enjoy :)
