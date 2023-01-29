@@ -28,8 +28,8 @@ Forget having this repetition and boilerplate:
 
 ```ts
 interface LoginForm {
-    email: FormControl<string>;
-    password?: FormControl<string>;
+  email: FormControl<string>;
+  password?: FormControl<string>;
 }
 
 const loginFormGroup = new FormGroup<LoginForm>({
@@ -42,11 +42,11 @@ But instead welcome:
 
 ```ts
 class LoginForm {
-   @FormControlTarget({nonNullable: true})
-   email: string;
-   
-   @FormControlTarget(Validators.minLength(6))
-   password: string;
+  @FormControlTarget({nonNullable: true})
+  email: string;
+  
+  @FormControlTarget(Validators.minLength(6))
+  password: string;
 }
 
 const loginFormGroup = toFormGroup<LoginForm>(LoginForm)!;
@@ -106,13 +106,13 @@ so they will reflect in all of them.
 If you do not name your default form group, a formId will
 be assigned from the library. In order to access it later
 (e.g. in the **formId** array) use the
-**DEFAULT_FORM** constant.
+**DEFAULT_GROUP** constant.
 
 Example:
 ```ts
 @FormGroupTarget()
 @FormGroupTarget("editForm")
-@FormGroupValidators([Validators.email, Validators.requiredTrue], [DEFAULT_FORM, "editForm"])
+@FormGroupValidators([Validators.email, Validators.requiredTrue], [DEFAULT_GROUP, "editForm"])
 class InvoiceRequest {
 
 }
@@ -151,14 +151,14 @@ so they will reflect in all of them.
 If you do not name your default form group, a formId will
 be assigned from the library. In order to access it later
 (e.g. in the **formId** array) use the
-**DEFAULT_FORM** constant.
+**DEFAULT_GROUP** constant.
 
 Example:
 ```ts
 @FormGroupTarget()
 @FormGroupTarget("editForm")
-@FormGroupValidators([Validators.email, Validators.requiredTrue], [DEFAULT_FORM, "editForm"])
-@FormGroupAsyncValidators([ctrl => of({ value: ctrl.value}), ctrl => of({ empty: !ctrl.value})], [DEFAULT_FORM, "editForm"])
+@FormGroupValidators([Validators.email, Validators.requiredTrue], [DEFAULT_GROUP, "editForm"])
+@FormGroupAsyncValidators([ctrl => of({ value: ctrl.value}), ctrl => of({ empty: !ctrl.value})], [DEFAULT_GROUP, "editForm"])
 class InvoiceRequest {
 
 }
@@ -214,11 +214,11 @@ Example:
 @FormGroupAsyncValidators(ctrl => of({ empty: !ctrl.value}))
 class InvoiceRequest {
 
-  @FormControlTarget([Validators.required, Validators.minLength(3)], [DEFAULT_FORM, "editForm"])
+  @FormControlTarget([Validators.required, Validators.minLength(3)], [DEFAULT_GROUP, "editForm"])
   public num: string = '001';
 
   constructor(
-      @FormControlTarget([], [DEFAULT_FORM, "editForm"])
+      @FormControlTarget([], [DEFAULT_GROUP, "editForm"])
       public date: Date = new Date()
   ) { }
 }
@@ -261,7 +261,7 @@ class InvoiceRequest {
 ```
 
  If a form control shares the same async validators on two or more
- form groups, an array of <strong>formId</strong> can be supplied
+ form groups, an array of **formId** can be supplied
 
 Example:
 
@@ -275,19 +275,19 @@ Example:
 @FormGroupAsyncValidators(ctrl => of({ empty: !ctrl.value}))
 class InvoiceRequest {
 
-  @FormControlTarget([Validators.required, Validators.minLength(3)], [DEFAULT_FORM, "editForm"])
-  @FormControlAsyncValidators([ctrl => of({ ok: ctrl.state == 'VALID'}), ctrl => of({ notOk: ctrl.state != 'VALID'})], [DEFAULT_FORM, "editForm"])
+  @FormControlTarget([Validators.required, Validators.minLength(3)], [DEFAULT_GROUP, "editForm"])
+  @FormControlAsyncValidators([ctrl => of({ ok: ctrl.state == 'VALID'}), ctrl => of({ notOk: ctrl.state != 'VALID'})], [DEFAULT_GROUP, "editForm"])
   public num: string = '001';
 
   constructor(
-      @FormControlTarget([], [DEFAULT_FORM, "editForm"])
-      @FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}), [DEFAULT_FORM, "editForm"])
+      @FormControlTarget([], [DEFAULT_GROUP, "editForm"])
+      @FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}), [DEFAULT_GROUP, "editForm"])
       public date: Date = new Date()
   ) { }
 }
 ```
 
-## Decorator `@NestedFormGroup`
+## Decorator `@NestedFormGroup`[^](#table-of-contents "Table of Contents")
 
 Decorator used on a **field/property** or a
 constructor **parameter** to denote that
@@ -437,7 +437,7 @@ constructor(
    @FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}))
    public date: Date = new Date(),
 
-   @NestedFormGroup(SupplierRequest, "validatedSupplier", [DEFAULT_FORM, "editForm"])
+   @NestedFormGroup(SupplierRequest, "validatedSupplier", [DEFAULT_GROUP, "editForm"])
    public supplier: SupplierRequest = new SupplierRequest()
 ) { }
 }
@@ -487,7 +487,7 @@ ngOnInit(): void {
         const invoice: InvoiceRequest = invoiceFormGroup.value!;
     });
     
-    const allFormGroupsExplicit = toFormGroups<InvoiceRequest>(InvoiceRequest, [DEFAULT_FORM, "editForm"]);
+    const allFormGroupsExplicit = toFormGroups<InvoiceRequest>(InvoiceRequest, [DEFAULT_GROUP, "editForm"]);
     allFormGroupsExplicit.forEach(invoiceFormGroup => {
         const invoice: InvoiceRequest = invoiceFormGroup.value!;
     });

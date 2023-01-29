@@ -5,8 +5,9 @@ const METADATA: any = {}
 
 
 export class ModelFormGroup<T> extends FormGroup {
-  override readonly value: T | null = null;
+    override readonly value: T | null = null;
 }
+
 export const DEFAULT_GROUP = "!A!N!S!R!!!THIS_IS_THE_DEFAULT_GROUP_ID!!A!N!S!R!";
 
 /**
@@ -36,9 +37,9 @@ export const DEFAULT_GROUP = "!A!N!S!R!!!THIS_IS_THE_DEFAULT_GROUP_ID!!A!N!S!R!"
  * @constructor
  */
 export function FormGroupTarget(formId: FormIdType = undefined) {
-  return (target: any) => {
-    initializeMetadata(target, formId);
-  }
+    return (target: any) => {
+        initializeMetadata(target, formId);
+    }
 }
 
 /**
@@ -72,14 +73,14 @@ export function FormGroupTarget(formId: FormIdType = undefined) {
  * If you do not name your default form group, a formId will
  * be assigned from the library. In order to access it later
  * (e.g. in the <strong>formId</strong> array) use the
- * <strong>DEFAULT_FORM</strong> constant.
+ * <strong>DEFAULT_GROUP</strong> constant.
  *
  * Example:
  * <pre><code>
  *
  *     @FormGroupTarget()
  *     @FormGroupTarget("editForm")
- *     @FormGroupValidators([Validators.email, Validators.requiredTrue], [DEFAULT_FORM, "editForm"])
+ *     @FormGroupValidators([Validators.email, Validators.requiredTrue], [DEFAULT_GROUP, "editForm"])
  *     class InvoiceRequest {
  *
  *     }
@@ -91,10 +92,10 @@ export function FormGroupTarget(formId: FormIdType = undefined) {
  * @constructor
  */
 export function FormGroupValidators(validators: ValidatorFn | ValidatorFn[], formId: FormIdType = undefined) {
-  return (target: any) => {
-    initializeMetadata(target, formId);
-    getFormGroups(target, formId).forEach(formGroup => formGroup.addValidators(validators))
-  }
+    return (target: any) => {
+        initializeMetadata(target, formId);
+        getFormGroups(target, formId).forEach(formGroup => formGroup.addValidators(validators))
+    }
 }
 
 /**
@@ -130,15 +131,15 @@ export function FormGroupValidators(validators: ValidatorFn | ValidatorFn[], for
  * If you do not name your default form group, a formId will
  * be assigned from the library. In order to access it later
  * (e.g. in the <strong>formId</strong> array) use the
- * <strong>DEFAULT_FORM</strong> constant.
+ * <strong>DEFAULT_GROUP</strong> constant.
  *
  * Example:
  * <pre><code>
  *
  *     @FormGroupTarget()
  *     @FormGroupTarget("editForm")
- *     @FormGroupValidators([Validators.email, Validators.requiredTrue], [DEFAULT_FORM, "editForm"])
- *     @FormGroupAsyncValidators([ctrl => of({ value: ctrl.value}), ctrl => of({ empty: !ctrl.value})], [DEFAULT_FORM, "editForm"])
+ *     @FormGroupValidators([Validators.email, Validators.requiredTrue], [DEFAULT_GROUP, "editForm"])
+ *     @FormGroupAsyncValidators([ctrl => of({ value: ctrl.value}), ctrl => of({ empty: !ctrl.value})], [DEFAULT_GROUP, "editForm"])
  *     class InvoiceRequest {
  *
  *     }
@@ -150,10 +151,10 @@ export function FormGroupValidators(validators: ValidatorFn | ValidatorFn[], for
  * @constructor
  */
 export function FormGroupAsyncValidators(validators: AsyncValidatorFn | AsyncValidatorFn[], formId: FormIdType = undefined) {
-  return (target: any) => {
-    initializeMetadata(target, formId);
-    getFormGroups(target, formId).forEach(formGroup => formGroup.addAsyncValidators(validators))
-  }
+    return (target: any) => {
+        initializeMetadata(target, formId);
+        getFormGroups(target, formId).forEach(formGroup => formGroup.addAsyncValidators(validators))
+    }
 }
 
 /**
@@ -205,11 +206,11 @@ export function FormGroupAsyncValidators(validators: AsyncValidatorFn | AsyncVal
  *     @FormGroupAsyncValidators(ctrl => of({ empty: !ctrl.value}))
  *     class InvoiceRequest {
  *
- *       @FormControlTarget([Validators.required, Validators.minLength(3)], [DEFAULT_FORM, "editForm"])
+ *       @FormControlTarget([Validators.required, Validators.minLength(3)], [DEFAULT_GROUP, "editForm"])
  *       public num: string = '001';
  *
  *       constructor(
- *           @FormControlTarget([], [DEFAULT_FORM, "editForm"])
+ *           @FormControlTarget([], [DEFAULT_GROUP, "editForm"])
  *           public date: Date = new Date()
  *       ) { }
  *     }
@@ -220,34 +221,34 @@ export function FormGroupAsyncValidators(validators: AsyncValidatorFn | AsyncVal
  * @constructor
  */
 export function FormControlTarget(validatorsOrOptions: ValidatorFn | ValidatorFn[] | FormControlOptions | null = null, formId: string | string[] | undefined = undefined) {
-  return (target: any, propName: string, descriptor: any = null) => {
-    const type = target.constructor.name == Function.name
-      ? target
-      : target.constructor;
+    return (target: any, propName: string, descriptor: any = null) => {
+        const type = target.constructor.name == Function.name
+            ? target
+            : target.constructor;
 
-    if (descriptor != undefined) {
-      propName = Object.keys(new target())[descriptor];
+        if (descriptor != undefined) {
+            propName = Object.keys(new target())[descriptor];
+        }
+
+        initializeMetadata(type, formId);
+
+        getFormGroups(type, formId).forEach(formGroup => {
+            if (!formGroup.get(propName)) {
+                formGroup.addControl(propName, new FormControl(
+                    new type()[propName],
+                    validatorsOrOptions
+                ));
+            } else {
+                const ctrl = formGroup.get(propName);
+                formGroup.removeControl(propName);
+                formGroup.addControl(propName, new FormControl(
+                    ctrl?.value,
+                    validatorsOrOptions,
+                    ctrl?.asyncValidator
+                ));
+            }
+        });
     }
-
-    initializeMetadata(type, formId);
-
-    getFormGroups(type, formId).forEach(formGroup => {
-      if (!formGroup.get(propName)) {
-        formGroup.addControl(propName, new FormControl(
-          new type()[propName],
-          validatorsOrOptions
-        ));
-      } else {
-        const ctrl = formGroup.get(propName);
-        formGroup.removeControl(propName);
-        formGroup.addControl(propName, new FormControl(
-          ctrl?.value,
-          validatorsOrOptions,
-          ctrl?.asyncValidator
-        ));
-      }
-    });
-  }
 }
 
 /**
@@ -300,13 +301,13 @@ export function FormControlTarget(validatorsOrOptions: ValidatorFn | ValidatorFn
  *     @FormGroupAsyncValidators(ctrl => of({ empty: !ctrl.value}))
  *     class InvoiceRequest {
  *
- *       @FormControlTarget([Validators.required, Validators.minLength(3)], [DEFAULT_FORM, "editForm"])
- *       @FormControlAsyncValidators([ctrl => of({ ok: ctrl.state == 'VALID'}), ctrl => of({ notOk: ctrl.state != 'VALID'})], [DEFAULT_FORM, "editForm"])
+ *       @FormControlTarget([Validators.required, Validators.minLength(3)], [DEFAULT_GROUP, "editForm"])
+ *       @FormControlAsyncValidators([ctrl => of({ ok: ctrl.state == 'VALID'}), ctrl => of({ notOk: ctrl.state != 'VALID'})], [DEFAULT_GROUP, "editForm"])
  *       public num: string = '001';
  *
  *       constructor(
- *           @FormControlTarget([], [DEFAULT_FORM, "editForm"])
- *           @FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}), [DEFAULT_FORM, "editForm"])
+ *           @FormControlTarget([], [DEFAULT_GROUP, "editForm"])
+ *           @FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}), [DEFAULT_GROUP, "editForm"])
  *           public date: Date = new Date()
  *       ) { }
  *     }
@@ -317,29 +318,29 @@ export function FormControlTarget(validatorsOrOptions: ValidatorFn | ValidatorFn
  * @constructor
  */
 export function FormControlAsyncValidators(validators: AsyncValidatorFn | AsyncValidatorFn[], formId: string | string[] | undefined = undefined) {
-  return (target: any, propName: string, descriptor: any = null) => {
-    const type = target.constructor.name == Function.name
-      ? target
-      : target.constructor;
+    return (target: any, propName: string, descriptor: any = null) => {
+        const type = target.constructor.name == Function.name
+            ? target
+            : target.constructor;
 
-    if (descriptor != undefined) {
-      propName = Object.keys(new target())[descriptor];
+        if (descriptor != undefined) {
+            propName = Object.keys(new target())[descriptor];
+        }
+
+        initializeMetadata(type, formId);
+
+        getFormGroups(type, formId).forEach(formGroup => {
+            if (!formGroup.get(propName)) {
+                formGroup.addControl(propName, new FormControl(
+                    new type()[propName],
+                    null,
+                    validators
+                ));
+            } else {
+                formGroup.get(propName)?.addAsyncValidators(validators);
+            }
+        });
     }
-
-    initializeMetadata(type, formId);
-
-    getFormGroups(type, formId).forEach(formGroup => {
-      if (!formGroup.get(propName)) {
-        formGroup.addControl(propName, new FormControl(
-          new type()[propName],
-          null,
-          validators
-        ));
-      } else {
-        formGroup.get(propName)?.addAsyncValidators(validators);
-      }
-    });
-  }
 }
 
 /**
@@ -495,7 +496,7 @@ export function FormControlAsyncValidators(validators: AsyncValidatorFn | AsyncV
  *           @FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}))
  *           public date: Date = new Date(),
  *
- *           @NestedFormGroup(SupplierRequest, "validatedSupplier", [DEFAULT_FORM, "editForm"])
+ *           @NestedFormGroup(SupplierRequest, "validatedSupplier", [DEFAULT_GROUP, "editForm"])
  *           public supplier: SupplierRequest = new SupplierRequest()
  *       ) { }
  *     }
@@ -507,24 +508,24 @@ export function FormControlAsyncValidators(validators: AsyncValidatorFn | AsyncV
  * @constructor
  */
 export function NestedFormGroup(sourceType: any, sourceFormId: string | undefined = undefined, targetFormId: FormIdType = undefined) {
-  return (target: any, propName: string, descriptor: any = null) => {
-    const type = target.constructor.name == Function.name
-        ? target
-        : target.constructor;
+    return (target: any, propName: string, descriptor: any = null) => {
+        const type = target.constructor.name == Function.name
+            ? target
+            : target.constructor;
 
-    if (descriptor != undefined) {
-      propName = Object.keys(new target())[descriptor];
+        if (descriptor != undefined) {
+            propName = Object.keys(new target())[descriptor];
+        }
+
+        initializeMetadata(type, targetFormId);
+
+        getFormGroups(type, targetFormId).forEach(formGroup => {
+            let nestedFormGroup = (getFormGroups(sourceType, sourceFormId) || [])[0];
+            if (nestedFormGroup) {
+                formGroup.addControl(propName, nestedFormGroup);
+            }
+        });
     }
-
-    initializeMetadata(type, targetFormId);
-
-    getFormGroups(type, targetFormId).forEach(formGroup => {
-      let nestedFormGroup = (getFormGroups(sourceType, sourceFormId) || [])[0];
-      if (nestedFormGroup) {
-        formGroup.addControl(propName, nestedFormGroup);
-      }
-    });
-  }
 }
 
 /**
@@ -546,40 +547,40 @@ export function NestedFormGroup(sourceType: any, sourceFormId: string | undefine
  * @param formId {FormIdType}
  */
 export function toFormGroup<T>(type: any, formId: string | null = null): ModelFormGroup<T> {
-  const f = formId ? formId : type.name;
-  return METADATA[type][f];
+    const f = formId ? formId : type.name;
+    return METADATA[type][f];
 }
 
 export function toFormGroups<T>(t: any, formIds: string[] = []): ModelFormGroup<T>[] {
-  if (formIds.length > 0) {
-    return formIds.map(f => METADATA[t][f]);
-  }
+    if (formIds.length > 0) {
+        return formIds.map(f => METADATA[t][f]);
+    }
 
-  return METADATA[t];
+    return METADATA[t];
 }
 
 function getFormGroups(target: any, formId: FormIdType): FormGroup[] {
-  return normalizeFormId(target, formId).map(f => METADATA[target][f]);
+    return normalizeFormId(target, formId).map(f => METADATA[target][f]);
 }
 
 function normalizeFormId(type: any, formId: FormIdType = undefined): string[] {
-  const forms = !!formId ? (Array.isArray(formId) ? formId : [formId]) : [type.name];
+    const forms = !!formId ? (Array.isArray(formId) ? formId : [formId]) : [type.name];
 
-  return forms.map(f => f === DEFAULT_GROUP ? type.name : f);
+    return forms.map(f => f === DEFAULT_GROUP ? type.name : f);
 }
 
 function initializeMetadata(target: any, formId: FormIdType = undefined) {
-  if (!METADATA[target]) {
-    METADATA[target] = {}
-  }
-
-  formId = normalizeFormId(target, formId);
-
-  formId.forEach(f => {
-    if (!METADATA[target][f]) {
-      METADATA[target][f] = new FormGroup({})
+    if (!METADATA[target]) {
+        METADATA[target] = {}
     }
-  })
+
+    formId = normalizeFormId(target, formId);
+
+    formId.forEach(f => {
+        if (!METADATA[target][f]) {
+            METADATA[target][f] = new FormGroup({})
+        }
+    })
 
 }
 
