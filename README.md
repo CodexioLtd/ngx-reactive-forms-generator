@@ -25,7 +25,7 @@ With several TypeScript decorators called `@FormGroupTarget`, `@FormGroupValidat
 
 Forget having this repetition and boilerplate:
 
-```
+```ts
 interface LoginForm {
     email: FormControl<string>;
     password?: FormControl<string>;
@@ -39,7 +39,7 @@ const loginFormGroup = new FormGroup<LoginForm>({
 
 But instead welcome:
 
-```
+```ts
 class LoginForm {
    @FormControlTarget({nonNullable: true})
    email: string;
@@ -67,14 +67,12 @@ is participating in the particular form group should
 share the same **formId**
 
 Usage:
-```
+```ts
+@FormGroupTarget()
+@FormGroupTarget("editForm")
+class InvoiceRequest {
 
-    @FormGroupTarget()
-    @FormGroupTarget("editForm")
-    class InvoiceRequest {
-
-    }
-
+}
 ```
 
 ## Decorator `@FormGroupValidators`[^](#table-of-contents "Table of Contents")
@@ -90,17 +88,15 @@ an additional parameter **formId**
 should be supplied
 
 Example:
-```
+```ts
+@FormGroupTarget()
+@FormGroupValidators(Validators.email)
 
-    @FormGroupTarget()
-    @FormGroupValidators(Validators.email)
+@FormGroupTarget("editForm")
+@FormGroupValidators(Validators.requiredTrue, "editForm")
+class InvoiceRequest {
 
-    @FormGroupTarget("editForm")
-    @FormGroupValidators(Validators.requiredTrue, "editForm")
-    class InvoiceRequest {
-
-    }
-
+}
 ```
 
 If two or more forms share the same validators,
@@ -112,14 +108,13 @@ be assigned from the library. In order to access it later
 **DEFAULT_FORM** constant.
 
 Example:
-```
+```ts
+@FormGroupTarget()
+@FormGroupTarget("editForm")
+@FormGroupValidators([Validators.email, Validators.requiredTrue], [DEFAULT_FORM, "editForm"])
+class InvoiceRequest {
 
-    @FormGroupTarget()
-    @FormGroupTarget("editForm")
-    @FormGroupValidators([Validators.email, Validators.requiredTrue], [DEFAULT_FORM, "editForm"])
-    class InvoiceRequest {
-
-    }
+}
     
 ```
 
@@ -136,19 +131,17 @@ an additional parameter **formId**
 should be supplied
 
 Example:
-```
+```ts
+@FormGroupTarget()
+@FormGroupValidators(Validators.email)
+@FormGroupAsyncValidators(ctrl => of({ value: ctrl.value}))
 
-    @FormGroupTarget()
-    @FormGroupValidators(Validators.email)
-    @FormGroupAsyncValidators(ctrl => of({ value: ctrl.value}))
+@FormGroupTarget("editForm")
+@FormGroupValidators(Validators.requiredTrue, "editForm")
+@FormGroupAsyncValidators(ctrl => of({ empty: !ctrl.value}))
+class InvoiceRequest {
 
-    @FormGroupTarget("editForm")
-    @FormGroupValidators(Validators.requiredTrue, "editForm")
-    @FormGroupAsyncValidators(ctrl => of({ empty: !ctrl.value}))
-    class InvoiceRequest {
-
-    }
-
+}
 ```
 
 If two or more forms share the same validators,
@@ -160,16 +153,14 @@ be assigned from the library. In order to access it later
 **DEFAULT_FORM** constant.
 
 Example:
-```
+```ts
+@FormGroupTarget()
+@FormGroupTarget("editForm")
+@FormGroupValidators([Validators.email, Validators.requiredTrue], [DEFAULT_FORM, "editForm"])
+@FormGroupAsyncValidators([ctrl => of({ value: ctrl.value}), ctrl => of({ empty: !ctrl.value})], [DEFAULT_FORM, "editForm"])
+class InvoiceRequest {
 
-    @FormGroupTarget()
-    @FormGroupTarget("editForm")
-    @FormGroupValidators([Validators.email, Validators.requiredTrue], [DEFAULT_FORM, "editForm"])
-    @FormGroupAsyncValidators([ctrl => of({ value: ctrl.value}), ctrl => of({ empty: !ctrl.value})], [DEFAULT_FORM, "editForm"])
-    class InvoiceRequest {
-
-    }
-
+}
 ```
 
 ## Decorator `@FormControlTarget`[^](#table-of-contents "Table of Contents")
@@ -186,25 +177,25 @@ This decorator also accepts as an argument on or more
 
 Example:
 
-```
-    @FormGroupTarget()
-    @FormGroupValidators(Validators.email)
-    @FormGroupAsyncValidators(ctrl => of({ value: ctrl.value}))
+```ts
+@FormGroupTarget()
+@FormGroupValidators(Validators.email)
+@FormGroupAsyncValidators(ctrl => of({ value: ctrl.value}))
 
-    @FormGroupTarget("editForm")
-    @FormGroupValidators(Validators.requiredTrue, "editForm")
-    @FormGroupAsyncValidators(ctrl => of({ empty: !ctrl.value}))
-    class InvoiceRequest {
+@FormGroupTarget("editForm")
+@FormGroupValidators(Validators.requiredTrue, "editForm")
+@FormGroupAsyncValidators(ctrl => of({ empty: !ctrl.value}))
+class InvoiceRequest {
 
-      @FormControlTarget(Validators.required)
-      @FormControlTarget(Validators.minLength(3), "editForm")
-      public num: string = '001';
+  @FormControlTarget(Validators.required)
+  @FormControlTarget(Validators.minLength(3), "editForm")
+  public num: string = '001';
 
-      constructor(
-          @FormControlTarget([], "editForm")
-          public date: Date = new Date();
-      )
-    }
+  constructor(
+      @FormControlTarget([], "editForm")
+      public date: Date = new Date()
+  ) { }
+}
 ```
 
  If a form control shares the same settings on two or more
@@ -212,24 +203,24 @@ Example:
 
 Example:
 
-```
-    @FormGroupTarget()
-    @FormGroupValidators(Validators.email)
-    @FormGroupAsyncValidators(ctrl => of({ value: ctrl.value}))
+```ts
+@FormGroupTarget()
+@FormGroupValidators(Validators.email)
+@FormGroupAsyncValidators(ctrl => of({ value: ctrl.value}))
 
-    @FormGroupTarget("editForm")
-    @FormGroupValidators(Validators.requiredTrue, "editForm")
-    @FormGroupAsyncValidators(ctrl => of({ empty: !ctrl.value}))
-    class InvoiceRequest {
+@FormGroupTarget("editForm")
+@FormGroupValidators(Validators.requiredTrue, "editForm")
+@FormGroupAsyncValidators(ctrl => of({ empty: !ctrl.value}))
+class InvoiceRequest {
 
-      @FormControlTarget([Validators.required, Validators.minLength(3)], [DEFAULT_FORM, "editForm"])
-      public num: string = '001';
+  @FormControlTarget([Validators.required, Validators.minLength(3)], [DEFAULT_FORM, "editForm"])
+  public num: string = '001';
 
-      constructor(
-          @FormControlTarget([], [DEFAULT_FORM, "editForm"])
-          public date: Date = new Date();
-      )
-    }
+  constructor(
+      @FormControlTarget([], [DEFAULT_FORM, "editForm"])
+      public date: Date = new Date()
+  ) { }
+}
 ```
 
 ## Decorator `@FormControlAsyncValidators`[^](#table-of-contents "Table of Contents")
@@ -244,28 +235,28 @@ to a particular form group by supplying **formId**.
 
 Example:
 
-```
-    @FormGroupTarget()
-    @FormGroupValidators(Validators.email)
-    @FormGroupAsyncValidators(ctrl => of({ value: ctrl.value}))
+```ts
+@FormGroupTarget()
+@FormGroupValidators(Validators.email)
+@FormGroupAsyncValidators(ctrl => of({ value: ctrl.value}))
 
-    @FormGroupTarget("editForm")
-    @FormGroupValidators(Validators.requiredTrue, "editForm")
-    @FormGroupAsyncValidators(ctrl => of({ empty: !ctrl.value}))
-    class InvoiceRequest {
+@FormGroupTarget("editForm")
+@FormGroupValidators(Validators.requiredTrue, "editForm")
+@FormGroupAsyncValidators(ctrl => of({ empty: !ctrl.value}))
+class InvoiceRequest {
 
-      @FormControlTarget(Validators.required)
-      @FormControlTarget(Validators.minLength(3), "editForm")
+  @FormControlTarget(Validators.required)
+  @FormControlTarget(Validators.minLength(3), "editForm")
+  @FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}))
+  @FormControlAsyncValidators(ctrl => of({ notOk: ctrl.state != 'VALID'}), "editForm")
+  public num: string = '001';
+
+  constructor(
+      @FormControlTarget([], "editForm")
       @FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}))
-      @FormControlAsyncValidators(ctrl => of({ notOk: ctrl.state != 'VALID'}), "editForm")
-      public num: string = '001';
-
-      constructor(
-          @FormControlTarget([], "editForm")
-          @FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}))
-          public date: Date = new Date();
-      )
-    }
+      public date: Date = new Date()
+  ) { }
+}
 ```
 
  If a form control shares the same async validators on two or more
@@ -273,26 +264,26 @@ Example:
 
 Example:
 
-```
-    @FormGroupTarget()
-    @FormGroupValidators(Validators.email)
-    @FormGroupAsyncValidators(ctrl => of({ value: ctrl.value}))
+```ts
+@FormGroupTarget()
+@FormGroupValidators(Validators.email)
+@FormGroupAsyncValidators(ctrl => of({ value: ctrl.value}))
 
-    @FormGroupTarget("editForm")
-    @FormGroupValidators(Validators.requiredTrue, "editForm")
-    @FormGroupAsyncValidators(ctrl => of({ empty: !ctrl.value}))
-    class InvoiceRequest {
+@FormGroupTarget("editForm")
+@FormGroupValidators(Validators.requiredTrue, "editForm")
+@FormGroupAsyncValidators(ctrl => of({ empty: !ctrl.value}))
+class InvoiceRequest {
 
-      @FormControlTarget([Validators.required, Validators.minLength(3)], [DEFAULT_FORM, "editForm"])
-      @FormControlAsyncValidators([ctrl => of({ ok: ctrl.state == 'VALID'}), ctrl => of({ notOk: ctrl.state != 'VALID'})], [DEFAULT_FORM, "editForm"])
-      public num: string = '001';
+  @FormControlTarget([Validators.required, Validators.minLength(3)], [DEFAULT_FORM, "editForm"])
+  @FormControlAsyncValidators([ctrl => of({ ok: ctrl.state == 'VALID'}), ctrl => of({ notOk: ctrl.state != 'VALID'})], [DEFAULT_FORM, "editForm"])
+  public num: string = '001';
 
-      constructor(
-          @FormControlTarget([], [DEFAULT_FORM, "editForm"])
-          @FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}), [DEFAULT_FORM, "editForm"])
-          public date: Date = new Date();
-      )
-    }
+  constructor(
+      @FormControlTarget([], [DEFAULT_FORM, "editForm"])
+      @FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}), [DEFAULT_FORM, "editForm"])
+      public date: Date = new Date()
+  ) { }
+}
 ```
 
 ## Function `toFormGroup<Type>(Type, [FormIdType])`[^](#table-of-contents "Table of Contents")
@@ -304,25 +295,25 @@ upon a class.
 
 Example:
 
-```
-    ngOnInit(): void {
-        const formGroup = toFormGroup<InvoiceRequest>(InvoiceRequest);
-        const invoice: InvoiceRequest = formGroup.value!;
-    }
+```ts
+ngOnInit(): void {
+    const formGroup = toFormGroup<InvoiceRequest>(InvoiceRequest);
+    const invoice: InvoiceRequest = formGroup.value!;
+}
 ```
 
 It accepts an optional second parameter *fromId* if you want to retrieve a particular (non-default) form.
 
 Example
 
-```
-    ngOnInit(): void {
-        const defaultFormGroup = toFormGroup<InvoiceRequest>(InvoiceRequest);
-        const defaultInvoice: InvoiceRequest = defaultFormGroup.value!;
-        
-        const editFormGroup = toFormGroup<InvoiceRequest>(InvoiceRequest, "editForm");
-        const editInvoice: InvoiceRequest = editFormGroup.value!;
-    }
+```ts
+ngOnInit(): void {
+    const defaultFormGroup = toFormGroup<InvoiceRequest>(InvoiceRequest);
+    const defaultInvoice: InvoiceRequest = defaultFormGroup.value!;
+    
+    const editFormGroup = toFormGroup<InvoiceRequest>(InvoiceRequest, "editForm");
+    const editInvoice: InvoiceRequest = editFormGroup.value!;
+}
 ```
 
 ## Function `toFormGroups<Type>(Type, FormIdType[])`[^](#table-of-contents "Table of Contents")
@@ -332,18 +323,18 @@ If empty array is supplied, it will return all form groups associated to the giv
 
 Example:
 
-```
-    ngOnInit(): void {
-        const allFormGroupsImplicit = toFormGroups<InvoiceRequest>(InvoiceRequest);
-        allFormGroupsImplicit.forEach(invoiceFormGroup => {
-            const invoice: InvoiceRequest = invoiceFormGroup.value!;
-        });
-        
-        const allFormGroupsExplicit = toFormGroups<InvoiceRequest>(InvoiceRequest, [DEFAULT_FORM, "editForm"]);
-        allFormGroupsExplicit.forEach(invoiceFormGroup => {
-            const invoice: InvoiceRequest = invoiceFormGroup.value!;
-        });
-    }
+```ts
+ngOnInit(): void {
+    const allFormGroupsImplicit = toFormGroups<InvoiceRequest>(InvoiceRequest);
+    allFormGroupsImplicit.forEach(invoiceFormGroup => {
+        const invoice: InvoiceRequest = invoiceFormGroup.value!;
+    });
+    
+    const allFormGroupsExplicit = toFormGroups<InvoiceRequest>(InvoiceRequest, [DEFAULT_FORM, "editForm"]);
+    allFormGroupsExplicit.forEach(invoiceFormGroup => {
+        const invoice: InvoiceRequest = invoiceFormGroup.value!;
+    });
+}
 ```
 
 # Installation[^](#table-of-contents "Table of Contents")
@@ -358,7 +349,7 @@ $ npm i @codexio/ngx-reactive-forms-generator
 ```
 
 **app.component.ts**
-```
+```ts
 import {FormControlTarget, ModelFormGroup, toFormGroup} from "@codexio/ngx-reactive-forms-generator";
 
 import {Component} from '@angular/core';
@@ -390,7 +381,7 @@ export class AppComponent implements OnInit {
 
 **app.component.html** *(Not related to this library, it uses standard Reactive Forms notations)*:
 
-```
+```html
 <h1>Login</h1>
 <form [formGroup]="loginForm" (ngSubmit)="login()">
   <input type="text" formControlName="email" /><br/>
