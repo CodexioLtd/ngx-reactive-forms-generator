@@ -4,7 +4,7 @@ Creates Angular FormGroup instances from DTOs (e.g. class PersonRequest) using d
 # Preambule
 Have you felt the burdon of describing your models in classes/interfaces and then redescribing them as `FormGroup` objects with multiple `FormControl` nested children? All the boilerplate that you need to write in order to achieve a decent **Reactive Forms** foundation in your project? It's not the case anymore!
 
-With several TypeScript decorators called `@FormGroupTarget`, `@FormGroupValidators`, `@FormGroupAsyncValidators`, `@FormControlTarget` and `@FormControlAsyncValidators` you can have a Reactive From right out of your DTO.
+With several TypeScript decorators called `@FormGroupTarget`, `@FormGroupValidators`, `@FormGroupAsyncValidators`, `@FormControlTarget` and `@FormControlAsyncValidators` you can have a Reactive Form right out of your DTO.
 
 Forget having this repetition and boilerplate:
 
