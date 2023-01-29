@@ -1,6 +1,6 @@
 {
-  "name": "ngx-reactive-forms-generator",
-  "version": "1.0.0",
+  "name": "@codexio/ngx-reactive-forms-generator",
+  "version": "1.0.1",
   "description": "Creates Angular FormGroup instances from DTOs (e.g. class PersonRequest) using decorators",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,5 +23,9 @@
   "license": "ISC",
   "dependencies": {
     "@angular/forms": "^15.1.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CodexioLtd/ngx-reactive-forms-generator"
   }
 }
