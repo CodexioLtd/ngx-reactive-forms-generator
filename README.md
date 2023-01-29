@@ -13,6 +13,7 @@ Creates Angular FormGroup instances from DTOs (e.g. class PersonRequest) using d
   * [Decorator `@FormGroupAsyncValidators`](#decorator-formgroupasyncvalidators)
   * [Decorator `@FormControlTarget`](#decorator-formcontroltarget)
   * [Decorator `@FormControlAsyncValidators`](#decorator-formcontrolasyncvalidators)
+  * [Decorator `@NestedFormGroup`](#decorator-nestedformgroup)
   * [Function `toFormGroup<Type>(Type, [FormIdType])`](#function-toformgrouptypetype-formidtype)
   * [Function `toFormGroups<Type>(Type, FormIdType[])`](#function-toformgroupstypetype-formidtype)
 - [Installation](#installation)
@@ -21,7 +22,7 @@ Creates Angular FormGroup instances from DTOs (e.g. class PersonRequest) using d
 # Preambule[^](#table-of-contents "Table of Contents")
 Have you felt the burden of describing your models in classes/interfaces and then redescribing them as `FormGroup` objects with multiple `FormControl` nested children? All the boilerplate that you need to write in order to achieve a decent **Reactive Forms** foundation in your project? It's not the case anymore!
 
-With several TypeScript decorators called `@FormGroupTarget`, `@FormGroupValidators`, `@FormGroupAsyncValidators`, `@FormControlTarget` and `@FormControlAsyncValidators` you can have a Reactive Form right out of your DTO.
+With several TypeScript decorators called `@FormGroupTarget`, `@FormGroupValidators`, `@FormGroupAsyncValidators`, `@FormControlTarget`, `@FormControlAsyncValidators` and `@NestedFormGroup` you can have a Reactive Form right out of your DTO.
 
 Forget having this repetition and boilerplate:
 
@@ -286,6 +287,162 @@ class InvoiceRequest {
 }
 ```
 
+## Decorator `@NestedFormGroup`
+
+Decorator used on a **field/property** or a
+constructor **parameter** to denote that
+this form control is actually a previously defined form group,
+in other words - a nested form group.
+
+This is the equivalent of:
+
+```ts
+const topLevelFormGroup = new FormGroup({
+ fieldOne: new FormControl(...),
+ nestedFormGroup: new FormGroup({  // <---- this 
+     nestedFieldInNestedGroup: new FormControl(...)
+ })
+});
+```
+
+Same as `FormGroupValidators` it can be associated
+to a particular form group by supplied `targetFormId`
+
+Also, since the nested entity may define more than one form group
+as described the nature of the decorators above, the second parameter
+**sourceFormId** actually chooses which of them to nest.
+
+
+Example (Basic):
+
+```ts
+@FormGroupTarget()
+class SupplierRequest {
+
+ @FormControlTarget()
+ public name: string = '';
+
+ @FormControlTarget()
+ public address: string = '';
+}
+
+@FormGroupTarget()
+@FormGroupValidators(Validators.email)
+@FormGroupAsyncValidators(ctrl => of({ value: ctrl.value}))
+
+@FormGroupTarget("editForm")
+@FormGroupValidators(Validators.requiredTrue, "editForm")
+@FormGroupAsyncValidators(ctrl => of({ empty: !ctrl.value}))
+class InvoiceRequest {
+
+@FormControlTarget(Validators.required)
+@FormControlTarget(Validators.minLength(3), "editForm")
+@FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}))
+@FormControlAsyncValidators(ctrl => of({ notOk: ctrl.state != 'VALID'}), "editForm")
+public num: string = '001';
+
+constructor(
+   @FormControlTarget([], "editForm")
+   @FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}))
+   public date: Date = new Date(),
+
+   @NestedFormGroup(SupplierRequest)
+   public supplier: SupplierRequest = new SupplierRequest()
+) { }
+}
+```
+
+If the nested form group (the `SupplierRequest`) defines more than
+one form group, we can choose which one of them to nest.
+
+Example:
+
+```ts
+@FormGroupTarget()
+@FormGroupTarget("validatedSupplier")
+class SupplierRequest {
+
+ @FormControlTarget()
+ @FormControlTarget(Validators.required, "validatedSupplier")
+ public name: string = '';
+
+ @FormControlTarget()
+ @FormControlTarget(Validators.required, "validatedSupplier")
+ public address: string = '';
+}
+
+@FormGroupTarget()
+@FormGroupValidators(Validators.email)
+@FormGroupAsyncValidators(ctrl => of({ value: ctrl.value}))
+
+@FormGroupTarget("editForm")
+@FormGroupValidators(Validators.requiredTrue, "editForm")
+@FormGroupAsyncValidators(ctrl => of({ empty: !ctrl.value}))
+class InvoiceRequest {
+
+@FormControlTarget(Validators.required)
+@FormControlTarget(Validators.minLength(3), "editForm")
+@FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}))
+@FormControlAsyncValidators(ctrl => of({ notOk: ctrl.state != 'VALID'}), "editForm")
+public num: string = '001';
+
+constructor(
+   @FormControlTarget([], "editForm")
+   @FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}))
+   public date: Date = new Date(),
+
+   @NestedFormGroup(SupplierRequest, "validatedSupplier")
+   public supplier: SupplierRequest = new SupplierRequest()
+) { }
+}
+```
+
+In the previous example we have nested the **validatedSupplier**
+form group to the default form group of **InvoiceRequest**. We can choose to nest it
+to **editForm** or to all of them
+
+Example:
+
+```ts
+@FormGroupTarget()
+@FormGroupTarget("validatedSupplier")
+class SupplierRequest {
+
+ @FormControlTarget()
+ @FormControlTarget(Validators.required, "validatedSupplier")
+ public name: string = '';
+
+ @FormControlTarget()
+ @FormControlTarget(Validators.required, "validatedSupplier")
+ public address: string = '';
+}
+
+@FormGroupTarget()
+@FormGroupValidators(Validators.email)
+@FormGroupAsyncValidators(ctrl => of({ value: ctrl.value}))
+
+@FormGroupTarget("editForm")
+@FormGroupValidators(Validators.requiredTrue, "editForm")
+@FormGroupAsyncValidators(ctrl => of({ empty: !ctrl.value}))
+class InvoiceRequest {
+
+@FormControlTarget(Validators.required)
+@FormControlTarget(Validators.minLength(3), "editForm")
+@FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}))
+@FormControlAsyncValidators(ctrl => of({ notOk: ctrl.state != 'VALID'}), "editForm")
+public num: string = '001';
+
+constructor(
+   @FormControlTarget([], "editForm")
+   @FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}))
+   public date: Date = new Date(),
+
+   @NestedFormGroup(SupplierRequest, "validatedSupplier", [DEFAULT_FORM, "editForm"])
+   public supplier: SupplierRequest = new SupplierRequest()
+) { }
+}
+```
+
 ## Function `toFormGroup<Type>(Type, [FormIdType])`[^](#table-of-contents "Table of Contents")
 
 This function returns a FormGroup (in particular an
@@ -302,7 +459,7 @@ ngOnInit(): void {
 }
 ```
 
-It accepts an optional second parameter *fromId* if you want to retrieve a particular (non-default) form.
+It accepts an optional second parameter **formId** if you want to retrieve a particular (non-default) form.
 
 Example
 
@@ -344,7 +501,7 @@ Installation is very simple. You just need to install the `npm` package `@codexi
 ## Installation / Usage Example[^](#table-of-contents "Table of Contents")
 
 **Terminal**
-```
+```shell
 $ npm i @codexio/ngx-reactive-forms-generator
 ```
 
@@ -386,7 +543,7 @@ export class AppComponent implements OnInit {
 <form [formGroup]="loginForm" (ngSubmit)="login()">
   <input type="text" formControlName="email" /><br/>
   <div *ngIf="loginForm.get('email')?.errors?.['required'] && loginForm.get('email')?.dirty">
-    Username is required <!-- Will appear after submit -->
+    Email is required <!-- Will appear after submit -->
   </div>
 
   <input type="password" formControlName="password" /><br/>

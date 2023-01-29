@@ -22,7 +22,7 @@ export const DEFAULT_GROUP = "!A!N!S!R!!!THIS_IS_THE_DEFAULT_GROUP_ID!!A!N!S!R!"
  * share the same <strong>formId</strong>
  *
  * Usage:
- * <code>
+ * <pre><code>
  *
  *     @FormGroupTarget()
  *     @FormGroupTarget("editForm")
@@ -30,7 +30,7 @@ export const DEFAULT_GROUP = "!A!N!S!R!!!THIS_IS_THE_DEFAULT_GROUP_ID!!A!N!S!R!"
  *
  *     }
  *
- * </code>
+ * </code></pre>
  *
  * @param formId {FormIdType}
  * @constructor
@@ -53,7 +53,7 @@ export function FormGroupTarget(formId: FormIdType = undefined) {
  * should be supplied
  *
  * Example:
- * <code>
+ * <pre><code>
  *
  *     @FormGroupTarget()
  *     @FormGroupValidators(Validators.email)
@@ -64,7 +64,7 @@ export function FormGroupTarget(formId: FormIdType = undefined) {
  *
  *     }
  *
- * </code>
+ * </code></pre>
  *
  * If two or more forms share the same validators,
  * an array of <strong>formId</strong> could be supplied,
@@ -75,7 +75,7 @@ export function FormGroupTarget(formId: FormIdType = undefined) {
  * <strong>DEFAULT_FORM</strong> constant.
  *
  * Example:
- * <code>
+ * <pre><code>
  *
  *     @FormGroupTarget()
  *     @FormGroupTarget("editForm")
@@ -84,7 +84,7 @@ export function FormGroupTarget(formId: FormIdType = undefined) {
  *
  *     }
  *
- * </code>
+ * </code></pre>
  *
  * @param validators {ValidatorFn | ValidatorFn[]}
  * @param formId {FormIdType}
@@ -109,7 +109,7 @@ export function FormGroupValidators(validators: ValidatorFn | ValidatorFn[], for
  * should be supplied
  *
  * Example:
- * <code>
+ * <pre><code>
  *
  *     @FormGroupTarget()
  *     @FormGroupValidators(Validators.email)
@@ -122,7 +122,7 @@ export function FormGroupValidators(validators: ValidatorFn | ValidatorFn[], for
  *
  *     }
  *
- * </code>
+ * </code></pre>
  *
  * If two or more forms share the same validators,
  * an array of <strong>formId</strong> could be supplied,
@@ -133,7 +133,7 @@ export function FormGroupValidators(validators: ValidatorFn | ValidatorFn[], for
  * <strong>DEFAULT_FORM</strong> constant.
  *
  * Example:
- * <code>
+ * <pre><code>
  *
  *     @FormGroupTarget()
  *     @FormGroupTarget("editForm")
@@ -143,7 +143,7 @@ export function FormGroupValidators(validators: ValidatorFn | ValidatorFn[], for
  *
  *     }
  *
- * </code>
+ * </code></pre>
  *
  * @param validators {AsyncValidatorFn | AsyncValidatorFn[]}
  * @param formId {FormIdType}
@@ -169,7 +169,7 @@ export function FormGroupAsyncValidators(validators: AsyncValidatorFn | AsyncVal
  *
  * Example:
  *
- * <code>
+ * <pre><code>
  *     @FormGroupTarget()
  *     @FormGroupValidators(Validators.email)
  *     @FormGroupAsyncValidators(ctrl => of({ value: ctrl.value}))
@@ -185,17 +185,17 @@ export function FormGroupAsyncValidators(validators: AsyncValidatorFn | AsyncVal
  *
  *       constructor(
  *           @FormControlTarget([], "editForm")
- *           public date: Date = new Date();
- *       )
+ *           public date: Date = new Date()
+ *       ) { }
  *     }
- *  </code>
+ *  </code></pre>
  *
  *  If a form control shares the same settings on two or more
  *  form groups, an array of <strong>formId</strong> can be supplied
  *
  * Example:
  *
- * <code>
+ * <pre><code>
  *     @FormGroupTarget()
  *     @FormGroupValidators(Validators.email)
  *     @FormGroupAsyncValidators(ctrl => of({ value: ctrl.value}))
@@ -210,10 +210,10 @@ export function FormGroupAsyncValidators(validators: AsyncValidatorFn | AsyncVal
  *
  *       constructor(
  *           @FormControlTarget([], [DEFAULT_FORM, "editForm"])
- *           public date: Date = new Date();
- *       )
+ *           public date: Date = new Date()
+ *       ) { }
  *     }
- *  </code>
+ *  </code></pre>
  *
  * @param validatorsOrOptions {ValidatorFn | ValidatorFn[] | FormControlOptions}
  * @param formId {FormIdType}
@@ -261,7 +261,7 @@ export function FormControlTarget(validatorsOrOptions: ValidatorFn | ValidatorFn
  *
  * Example:
  *
- * <code>
+ * <pre><code>
  *     @FormGroupTarget()
  *     @FormGroupValidators(Validators.email)
  *     @FormGroupAsyncValidators(ctrl => of({ value: ctrl.value}))
@@ -280,17 +280,17 @@ export function FormControlTarget(validatorsOrOptions: ValidatorFn | ValidatorFn
  *       constructor(
  *           @FormControlTarget([], "editForm")
  *           @FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}))
- *           public date: Date = new Date();
- *       )
+ *           public date: Date = new Date()
+ *       ) { }
  *     }
- *  </code>
+ *  </code></pre>
  *
  *  If a form control shares the same async validators on two or more
  *  form groups, an array of <strong>formId</strong> can be supplied
  *
  * Example:
  *
- * <code>
+ * <pre><code>
  *     @FormGroupTarget()
  *     @FormGroupValidators(Validators.email)
  *     @FormGroupAsyncValidators(ctrl => of({ value: ctrl.value}))
@@ -307,10 +307,10 @@ export function FormControlTarget(validatorsOrOptions: ValidatorFn | ValidatorFn
  *       constructor(
  *           @FormControlTarget([], [DEFAULT_FORM, "editForm"])
  *           @FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}), [DEFAULT_FORM, "editForm"])
- *           public date: Date = new Date();
- *       )
+ *           public date: Date = new Date()
+ *       ) { }
  *     }
- *  </code>
+ *  </code></pre>
  *
  * @param validators {AsyncValidatorFn | AsyncValidatorFn[]}
  * @param formId {FormIdType}
@@ -343,6 +343,191 @@ export function FormControlAsyncValidators(validators: AsyncValidatorFn | AsyncV
 }
 
 /**
+ * Decorator used on a <strong>field/property</strong> or a
+ * constructor <strong>parameter</strong> to denote that
+ * this form control is actually a previously defined form group,
+ * in other words - a nested form group.
+ *
+ * This is the equivalent of:
+ *
+ * <pre><code>
+ *     const topLevelFormGroup = new FormGroup({
+ *         fieldOne: new FormControl(...),
+ *         nestedFormGroup: new FormGroup({  // <---- this
+ *             nestedFieldInNestedGroup: new FormControl(...)
+ *         })
+ *     });
+ * </code></pre>
+ *
+ *
+ * Same as @see FormGroupValidators it can be associated
+ * to a particular form group by supplied <strong>targetFormId</strong>.
+ *
+ * Also, since the nested entity may define more than one form group
+ * as described the nature of the decorators above, the second parameter
+ * <strong>sourceFormId</strong> actually chooses which of them to nest.
+ *
+ *
+ * Example (Basic):
+ *
+ * <pre><code>
+ *
+ *     @FormGroupTarget()
+ *     class SupplierRequest {
+ *
+ *         @FormControlTarget()
+ *         public name: string = '';
+ *
+ *         @FormControlTarget()
+ *         public address: string = '';
+ *     }
+ *
+ *     @FormGroupTarget()
+ *     @FormGroupValidators(Validators.email)
+ *     @FormGroupAsyncValidators(ctrl => of({ value: ctrl.value}))
+ *
+ *     @FormGroupTarget("editForm")
+ *     @FormGroupValidators(Validators.requiredTrue, "editForm")
+ *     @FormGroupAsyncValidators(ctrl => of({ empty: !ctrl.value}))
+ *     class InvoiceRequest {
+ *
+ *       @FormControlTarget(Validators.required)
+ *       @FormControlTarget(Validators.minLength(3), "editForm")
+ *       @FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}))
+ *       @FormControlAsyncValidators(ctrl => of({ notOk: ctrl.state != 'VALID'}), "editForm")
+ *       public num: string = '001';
+ *
+ *       constructor(
+ *           @FormControlTarget([], "editForm")
+ *           @FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}))
+ *           public date: Date = new Date(),
+ *
+ *           @NestedFormGroup(SupplierRequest)
+ *           public supplier: SupplierRequest = new SupplierRequest()
+ *       ) { }
+ *     }
+ *  </code></pre>
+ *
+ *  If the nested form group (the SupplierRequest) defines more than
+ *  one form group, we can choose which one of them to nest.
+ *
+ * Example:
+ *
+ * <pre><code>
+ *
+ *     @FormGroupTarget()
+ *     @FormGroupTarget("validatedSupplier")
+ *     class SupplierRequest {
+ *
+ *         @FormControlTarget()
+ *         @FormControlTarget(Validators.required, "validatedSupplier")
+ *         public name: string = '';
+ *
+ *         @FormControlTarget()
+ *         @FormControlTarget(Validators.required, "validatedSupplier")
+ *         public address: string = '';
+ *     }
+ *
+ *     @FormGroupTarget()
+ *     @FormGroupValidators(Validators.email)
+ *     @FormGroupAsyncValidators(ctrl => of({ value: ctrl.value}))
+ *
+ *     @FormGroupTarget("editForm")
+ *     @FormGroupValidators(Validators.requiredTrue, "editForm")
+ *     @FormGroupAsyncValidators(ctrl => of({ empty: !ctrl.value}))
+ *     class InvoiceRequest {
+ *
+ *       @FormControlTarget(Validators.required)
+ *       @FormControlTarget(Validators.minLength(3), "editForm")
+ *       @FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}))
+ *       @FormControlAsyncValidators(ctrl => of({ notOk: ctrl.state != 'VALID'}), "editForm")
+ *       public num: string = '001';
+ *
+ *       constructor(
+ *           @FormControlTarget([], "editForm")
+ *           @FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}))
+ *           public date: Date = new Date(),
+ *
+ *           @NestedFormGroup(SupplierRequest, "validatedSupplier")
+ *           public supplier: SupplierRequest = new SupplierRequest()
+ *       ) { }
+ *     }
+ *  </code></pre>
+ *
+ *  In the previous example we have nested the <strong>validatedSupplier</strong>
+ *  form group to the default form group of <strong>InvoiceRequest</strong>. We can choose to nest it
+ *  to <strong>editForm</strong> or to all of them
+ *
+ *  Example:
+ *
+ * <pre><code>
+ *
+ *     @FormGroupTarget()
+ *     @FormGroupTarget("validatedSupplier")
+ *     class SupplierRequest {
+ *
+ *         @FormControlTarget()
+ *         @FormControlTarget(Validators.required, "validatedSupplier")
+ *         public name: string = '';
+ *
+ *         @FormControlTarget()
+ *         @FormControlTarget(Validators.required, "validatedSupplier")
+ *         public address: string = '';
+ *     }
+ *
+ *     @FormGroupTarget()
+ *     @FormGroupValidators(Validators.email)
+ *     @FormGroupAsyncValidators(ctrl => of({ value: ctrl.value}))
+ *
+ *     @FormGroupTarget("editForm")
+ *     @FormGroupValidators(Validators.requiredTrue, "editForm")
+ *     @FormGroupAsyncValidators(ctrl => of({ empty: !ctrl.value}))
+ *     class InvoiceRequest {
+ *
+ *       @FormControlTarget(Validators.required)
+ *       @FormControlTarget(Validators.minLength(3), "editForm")
+ *       @FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}))
+ *       @FormControlAsyncValidators(ctrl => of({ notOk: ctrl.state != 'VALID'}), "editForm")
+ *       public num: string = '001';
+ *
+ *       constructor(
+ *           @FormControlTarget([], "editForm")
+ *           @FormControlAsyncValidators(ctrl => of({ ok: ctrl.state == 'VALID'}))
+ *           public date: Date = new Date(),
+ *
+ *           @NestedFormGroup(SupplierRequest, "validatedSupplier", [DEFAULT_FORM, "editForm"])
+ *           public supplier: SupplierRequest = new SupplierRequest()
+ *       ) { }
+ *     }
+ *  </code></pre>
+ *
+ * @param sourceType The source type that is previously defining a form group, e.g. <strong>SupplierRequest</strong>
+ * @param sourceFormId Optional form id of the nested type, if it defines more than one form group
+ * @param targetFormId {FormIdType} The target form id(s) which needs the nesting
+ * @constructor
+ */
+export function NestedFormGroup(sourceType: any, sourceFormId: string | undefined = undefined, targetFormId: FormIdType = undefined) {
+  return (target: any, propName: string, descriptor: any = null) => {
+    const type = target.constructor.name == Function.name
+        ? target
+        : target.constructor;
+
+    if (descriptor != undefined) {
+      propName = Object.keys(new target())[descriptor];
+    }
+
+    initializeMetadata(type, targetFormId);
+
+    getFormGroups(type, targetFormId).forEach(formGroup => {
+      let nestedFormGroup = (getFormGroups(sourceType, sourceFormId) || [])[0];
+      if (nestedFormGroup) {
+        formGroup.addControl(propName, nestedFormGroup);
+      }
+    });
+  }
+}
+
+/**
  * This function returns a FormGroup (in particular an
  * enhanced <strong>ModelFormGroup</strong> which <strong>value</strong>
  * property will be of a generic type supplied) based on the decorators
@@ -350,12 +535,12 @@ export function FormControlAsyncValidators(validators: AsyncValidatorFn | AsyncV
  *
  * Example:
  *
- * <code>
+ * <pre><code>
  *     ngOnInit(): void {
  *         const formGroup = toFormGroup<InvoiceRequest>(InvoiceRequest);
  *         const invoice: InvoiceRequest = formGroup.value;
  *     }
- * </code>
+ * </code></pre>
  *
  * @param type Any given type e.g. InvoiceRequest
  * @param formId {FormIdType}
