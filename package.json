@@ -1,0 +1,27 @@
+{
+  "name": "ngx-reactive-forms-generator",
+  "version": "1.0.0",
+  "description": "Creates Angular FormGroup instances from DTOs (e.g. class PersonRequest) using decorators",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prepublish": "tsc",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "reactive",
+    "forms",
+    "formgroup",
+    "angular",
+    "dto",
+    "decorators",
+    "dynamic",
+    "formgroup"
+  ],
+  "author": "Ivan Yonkov",
+  "license": "ISC",
+  "dependencies": {
+    "@angular/forms": "^15.1.2"
+  }
+}

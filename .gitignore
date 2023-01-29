@@ -1,0 +1,4 @@
+.idea
+dist
+*.tgz
+node_modules
